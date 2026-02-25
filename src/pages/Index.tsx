@@ -1,154 +1,250 @@
 import { Link } from "react-router-dom";
-import { FiCode, FiTrendingUp, FiSmartphone, FiLayout, FiTarget, FiUsers, FiArrowRight, FiCheck } from "react-icons/fi";
+import { motion } from "framer-motion";
+import { FiArrowRight, FiStar, FiAward, FiTruck, FiShield } from "react-icons/fi";
 
-const services = [
-  { icon: FiCode, title: "Web Development", desc: "Scalable web applications built with modern technologies and best practices." },
-  { icon: FiSmartphone, title: "Mobile Apps", desc: "Native and cross-platform mobile applications for iOS and Android." },
-  { icon: FiLayout, title: "UI/UX Design", desc: "User-centered design that creates engaging and intuitive digital experiences." },
-  { icon: FiTrendingUp, title: "SEO Services", desc: "Data-driven SEO strategies to improve your search engine visibility." },
-  { icon: FiTarget, title: "Digital Marketing", desc: "Comprehensive digital marketing campaigns that drive real results." },
-  { icon: FiUsers, title: "IT Consulting", desc: "Expert technology consulting to help you make informed decisions." },
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (i: number) => ({
+    opacity: 1, y: 0,
+    transition: { delay: i * 0.15, duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] as const }
+  }),
+};
+
+const categories = [
+  {
+    title: "Premium Furniture",
+    desc: "Handcrafted pieces with timeless elegance",
+    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&h=400&fit=crop",
+    tag: "New Collection",
+  },
+  {
+    title: "Smart Watches",
+    desc: "Where technology meets sophistication",
+    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=400&fit=crop",
+    tag: "Trending",
+  },
+  {
+    title: "Epoxy Creations",
+    desc: "Unique resin art pieces for modern spaces",
+    image: "https://images.unsplash.com/photo-1631631480669-535cc43f2327?w=600&h=400&fit=crop",
+    tag: "Artisan",
+  },
 ];
 
-const stats = [
-  { value: "200+", label: "Projects Delivered" },
-  { value: "50+", label: "Happy Clients" },
-  { value: "15+", label: "Team Members" },
-  { value: "5+", label: "Years Experience" },
+const features = [
+  { icon: FiAward, title: "Premium Quality", desc: "Only the finest materials and craftsmanship" },
+  { icon: FiTruck, title: "Free Shipping", desc: "Complimentary delivery on orders above ₹5,000" },
+  { icon: FiShield, title: "2-Year Warranty", desc: "Complete peace of mind with every purchase" },
+  { icon: FiStar, title: "5-Star Rated", desc: "Trusted by 10,000+ premium customers" },
 ];
 
 const Index = () => {
   return (
     <>
       {/* Hero */}
-      <section className="hero-gradient section-padding relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE4YzMuMzE0IDAgNiAyLjY4NiA2IDZzLTIuNjg2IDYtNiA2LTYtMi42ODYtNi02IDIuNjg2LTYgNi02eiIvPjwvZz48L2c+PC9zdmc+')] opacity-50"></div>
-        <div className="container-main relative">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="mb-4 inline-block rounded-full border border-primary-foreground/20 px-4 py-1 text-sm font-medium text-primary-foreground/80 animate-fade-in">
-              🚀 Transforming Ideas Into Digital Reality
-            </p>
-            <h1 className="mb-6 text-4xl font-bold leading-tight text-primary-foreground sm:text-5xl lg:text-6xl animate-fade-in" style={{ animationDelay: "0.1s" }}>
-              Innovation Private Limited
-            </h1>
-            <p className="mb-8 text-lg leading-relaxed text-primary-foreground/80 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-              We deliver world-class software development and digital marketing
-              solutions that help businesses grow, scale, and succeed in the
-              digital landscape.
-            </p>
-            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center animate-fade-in" style={{ animationDelay: "0.3s" }}>
-              <Link to="/services" className="inline-flex items-center gap-2 rounded-lg bg-primary-foreground px-6 py-3 text-sm font-semibold text-primary transition-transform hover:scale-105">
-                Our Services <FiArrowRight />
-              </Link>
-              <Link to="/contact" className="inline-flex items-center gap-2 rounded-lg border border-primary-foreground/30 px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10">
-                Get In Touch
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="border-b border-border bg-card">
-        <div className="container-main py-12">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center animate-fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
-                <div className="text-3xl font-bold text-primary lg:text-4xl">{stat.value}</div>
-                <div className="mt-1 text-sm text-muted-foreground">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Services */}
-      <section className="section-padding bg-background">
-        <div className="container-main">
-          <div className="mx-auto mb-12 max-w-2xl text-center">
-            <h2 className="mb-4 text-3xl font-bold text-foreground lg:text-4xl">Our Services</h2>
-            <p className="text-muted-foreground">
-              We offer a comprehensive suite of technology and marketing services
-              tailored to your business needs.
-            </p>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((service, i) => (
-              <div
-                key={i}
-                className="group rounded-xl border border-border bg-card p-6 transition-all duration-300 card-shadow hover:card-shadow-hover hover:-translate-y-1 animate-fade-in"
-                style={{ animationDelay: `${i * 0.1}s` }}
-              >
-                <div className="mb-4 inline-flex rounded-lg bg-primary/10 p-3 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                  <service.icon size={24} />
-                </div>
-                <h3 className="mb-2 font-sans text-lg font-semibold text-card-foreground">{service.title}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">{service.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose Us */}
-      <section className="section-padding bg-muted">
-        <div className="container-main">
+      <section className="relative min-h-screen flex items-center overflow-hidden hero-gradient">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(40_60%_50%/0.08),transparent_60%)]" />
+        <div className="absolute top-20 right-10 w-72 h-72 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute bottom-20 left-10 w-96 h-96 rounded-full bg-primary/3 blur-3xl" />
+        
+        <div className="container-main relative z-10 py-32">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div>
-              <h2 className="mb-6 text-3xl font-bold text-foreground lg:text-4xl">
-                Why Choose Innovation?
-              </h2>
-              <p className="mb-6 text-muted-foreground leading-relaxed">
-                With years of experience in the technology industry, we bring a
-                unique blend of technical expertise and creative thinking to every
-                project.
-              </p>
-              <ul className="space-y-4">
-                {[
-                  "Experienced team of developers & marketers",
-                  "Agile methodology for faster delivery",
-                  "24/7 support and maintenance",
-                  "Transparent pricing with no hidden costs",
-                  "100% client satisfaction guarantee",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-foreground">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                      <FiCheck size={14} />
-                    </span>
-                    <span className="text-sm">{item}</span>
-                  </li>
-                ))}
-              </ul>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold bg-gold-subtle px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-primary"
+              >
+                <FiStar size={12} /> Luxury Redefined
+              </motion.p>
+              
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.1 }}
+                className="mb-6 text-5xl font-bold leading-[1.1] text-foreground sm:text-6xl lg:text-7xl"
+              >
+                Elevate Your
+                <span className="block text-gradient-gold">Living Space</span>
+              </motion.h1>
+              
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="mb-8 max-w-md text-base leading-relaxed text-muted-foreground"
+              >
+                Discover our curated collection of premium furniture, smart watches, 
+                and bespoke epoxy art pieces — designed for those who appreciate the finer things.
+              </motion.p>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="flex flex-col gap-4 sm:flex-row"
+              >
+                <Link to="/products" className="inline-flex items-center justify-center gap-2 rounded-sm bg-primary px-8 py-3.5 text-sm font-semibold uppercase tracking-wider text-primary-foreground transition-all hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02]">
+                  Explore Collection <FiArrowRight />
+                </Link>
+                <Link to="/about" className="inline-flex items-center justify-center gap-2 rounded-sm border border-gold px-8 py-3.5 text-sm font-semibold uppercase tracking-wider text-foreground transition-all hover:bg-gold-subtle">
+                  Our Story
+                </Link>
+              </motion.div>
             </div>
-            <div className="rounded-xl hero-gradient p-8 text-center lg:p-12">
-              <div className="text-5xl font-bold text-primary-foreground lg:text-6xl">5+</div>
-              <div className="mt-2 text-lg text-primary-foreground/80">Years of Excellence</div>
-              <div className="my-6 h-px bg-primary-foreground/20"></div>
-              <p className="text-sm leading-relaxed text-primary-foreground/70">
-                Trusted by 50+ businesses across multiple industries, delivering
-                200+ successful projects with cutting-edge technology.
-              </p>
-            </div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.3 }}
+              className="relative hidden lg:block"
+            >
+              <div className="relative aspect-[4/5] overflow-hidden rounded-sm">
+                <img
+                  src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&h=750&fit=crop"
+                  alt="Premium furniture showcase"
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+              </div>
+              <div className="absolute -bottom-4 -left-4 rounded-sm border border-gold bg-card p-4 gold-glow">
+                <p className="text-xs uppercase tracking-wider text-primary">Since 2019</p>
+                <p className="text-2xl font-bold text-foreground font-display">10K+</p>
+                <p className="text-xs text-muted-foreground">Happy Customers</p>
+              </div>
+            </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* Features Strip */}
+      <section className="border-y border-gold bg-card">
+        <div className="container-main py-10">
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+            {features.map((f, i) => (
+              <motion.div
+                key={i}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                custom={i}
+                className="flex items-start gap-3"
+              >
+                <div className="rounded-sm bg-gold-subtle p-2 text-primary">
+                  <f.icon size={18} />
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground">{f.title}</h4>
+                  <p className="text-xs text-muted-foreground">{f.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Categories */}
+      <section className="section-padding bg-background">
+        <div className="container-main">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={0}
+            className="mx-auto mb-14 max-w-xl text-center"
+          >
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-primary">Collections</p>
+            <h2 className="mb-4 text-4xl font-bold text-foreground lg:text-5xl">Curated For You</h2>
+            <p className="text-muted-foreground">Explore our signature categories, each crafted with precision and passion.</p>
+          </motion.div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {categories.map((cat, i) => (
+              <motion.div
+                key={i}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                custom={i + 1}
+              >
+                <Link to="/products" className="group relative block overflow-hidden rounded-sm aspect-[3/4]">
+                  <img
+                    src={cat.image}
+                    alt={cat.title}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+                  <div className="absolute top-4 left-4">
+                    <span className="rounded-sm bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
+                      {cat.tag}
+                    </span>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <h3 className="mb-1 text-2xl font-bold text-foreground font-display">{cat.title}</h3>
+                    <p className="mb-3 text-sm text-muted-foreground">{cat.desc}</p>
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary transition-transform group-hover:translate-x-1">
+                      Shop Now <FiArrowRight size={12} />
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonial / Statement */}
+      <section className="section-padding bg-card border-y border-gold">
+        <div className="container-main">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={0}
+            className="mx-auto max-w-3xl text-center"
+          >
+            <p className="mb-6 text-xs font-semibold uppercase tracking-[0.3em] text-primary">— Our Promise —</p>
+            <blockquote className="text-2xl font-display leading-relaxed text-foreground md:text-3xl lg:text-4xl">
+              "Every piece we create tells a story of 
+              <span className="text-gradient-gold"> craftsmanship, innovation,</span> and an 
+              unwavering commitment to excellence."
+            </blockquote>
+            <p className="mt-6 text-sm text-muted-foreground">— The Infiniox Team</p>
+          </motion.div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="section-padding bg-background">
-        <div className="container-main text-center">
-          <h2 className="mb-4 text-3xl font-bold text-foreground lg:text-4xl">
-            Ready to Start Your Project?
-          </h2>
-          <p className="mx-auto mb-8 max-w-xl text-muted-foreground">
-            Let's discuss how Innovation Private Limited can help bring your
-            vision to life with our expertise.
-          </p>
-          <Link
-            to="/contact"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground transition-transform hover:scale-105"
+      <section className="section-padding bg-background relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(40_60%_50%/0.05),transparent_70%)]" />
+        <div className="container-main relative text-center">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={0}
           >
-            Contact Us Today <FiArrowRight />
-          </Link>
+            <h2 className="mb-4 text-4xl font-bold text-foreground lg:text-5xl">
+              Ready to Transform Your Space?
+            </h2>
+            <p className="mx-auto mb-8 max-w-lg text-muted-foreground">
+              Get in touch with our design experts and discover pieces that reflect your unique style.
+            </p>
+            <Link
+              to="/contact"
+              className="inline-flex items-center gap-2 rounded-sm bg-primary px-10 py-4 text-sm font-semibold uppercase tracking-wider text-primary-foreground transition-all hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/20"
+            >
+              Contact Us <FiArrowRight />
+            </Link>
+          </motion.div>
         </div>
       </section>
     </>

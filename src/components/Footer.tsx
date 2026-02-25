@@ -1,27 +1,21 @@
 import { Link } from "react-router-dom";
-import { FiFacebook, FiTwitter, FiLinkedin, FiInstagram, FiMail, FiPhone, FiMapPin } from "react-icons/fi";
+import { FiInstagram, FiTwitter, FiFacebook, FiMail, FiPhone, FiMapPin } from "react-icons/fi";
 
 const Footer = () => {
   return (
-    <footer className="bg-primary text-primary-foreground">
+    <footer className="border-t border-gold bg-card">
       <div className="container-main py-16">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div>
-            <div className="mb-4 flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-foreground">
-                <span className="text-base font-bold text-primary">I</span>
-              </div>
-              <span className="text-lg font-bold">Innovation Pvt. Ltd.</span>
-            </div>
-            <p className="text-sm leading-relaxed opacity-80">
-              Empowering businesses through cutting-edge software solutions and
-              result-driven digital marketing strategies.
+            <h3 className="mb-3 text-2xl font-display text-gradient-gold">INFINIOX</h3>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              Crafting premium furniture, smart watches, and bespoke epoxy art pieces that redefine luxury living.
             </p>
             <div className="mt-4 flex gap-3">
-              {[FiFacebook, FiTwitter, FiLinkedin, FiInstagram].map((Icon, i) => (
-                <a key={i} href="#" className="rounded-lg p-2 opacity-70 transition-opacity hover:opacity-100 hover:bg-primary-foreground/10">
-                  <Icon size={18} />
+              {[FiInstagram, FiTwitter, FiFacebook].map((Icon, i) => (
+                <a key={i} href="#" className="rounded-sm border border-gold p-2 text-muted-foreground transition-all hover:text-primary hover:border-primary">
+                  <Icon size={16} />
                 </a>
               ))}
             </div>
@@ -29,52 +23,45 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="mb-4 font-sans text-sm font-semibold uppercase tracking-wider opacity-70">Quick Links</h4>
+            <h4 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-primary">Navigation</h4>
             <ul className="space-y-2">
-              {["Home", "About", "Services", "Blog", "Contact"].map((item) => (
-                <li key={item}>
-                  <Link to={item === "Home" ? "/" : `/${item.toLowerCase()}`} className="text-sm opacity-80 transition-opacity hover:opacity-100">
-                    {item}
-                  </Link>
+              {[{ label: "Home", to: "/" }, { label: "About", to: "/about" }, { label: "Products", to: "/products" }, { label: "Contact", to: "/contact" }].map((item) => (
+                <li key={item.label}>
+                  <Link to={item.to} className="text-sm text-muted-foreground transition-colors hover:text-foreground">{item.label}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Services */}
+          {/* Categories */}
           <div>
-            <h4 className="mb-4 font-sans text-sm font-semibold uppercase tracking-wider opacity-70">Services</h4>
+            <h4 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-primary">Categories</h4>
             <ul className="space-y-2">
-              {["Web Development", "Mobile Apps", "UI/UX Design", "SEO Services", "Digital Marketing"].map((item) => (
-                <li key={item}>
-                  <span className="text-sm opacity-80">{item}</span>
-                </li>
+              {["Premium Furniture", "Smart Watches", "Epoxy Art", "Custom Orders"].map((item) => (
+                <li key={item}><span className="text-sm text-muted-foreground">{item}</span></li>
               ))}
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* Contact */}
           <div>
-            <h4 className="mb-4 font-sans text-sm font-semibold uppercase tracking-wider opacity-70">Contact Us</h4>
+            <h4 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-primary">Contact</h4>
             <ul className="space-y-3">
-              <li className="flex items-start gap-2 text-sm opacity-80">
-                <FiMapPin size={16} className="mt-0.5 shrink-0" />
-                123 Innovation Street, Tech Park, New Delhi, India
+              <li className="flex items-start gap-2 text-sm text-muted-foreground">
+                <FiMapPin size={14} className="mt-0.5 shrink-0 text-primary" /> 42 Artisan Boulevard, Mumbai, India
               </li>
-              <li className="flex items-center gap-2 text-sm opacity-80">
-                <FiPhone size={16} className="shrink-0" />
-                +91 98765 43210
+              <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                <FiPhone size={14} className="shrink-0 text-primary" /> +91 98765 43210
               </li>
-              <li className="flex items-center gap-2 text-sm opacity-80">
-                <FiMail size={16} className="shrink-0" />
-                info@innovationpvt.com
+              <li className="flex items-center gap-2 text-sm text-muted-foreground">
+                <FiMail size={14} className="shrink-0 text-primary" /> hello@infiniox.com
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-12 border-t border-primary-foreground/20 pt-6 text-center text-sm opacity-60">
-          © {new Date().getFullYear()} Innovation Private Limited. All rights reserved.
+        <div className="mt-12 border-t border-gold pt-6 text-center text-xs text-muted-foreground tracking-wide">
+          © {new Date().getFullYear()} INFINIOX. All rights reserved. Crafted with passion.
         </div>
       </div>
     </footer>
