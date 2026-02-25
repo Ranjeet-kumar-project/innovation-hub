@@ -6,6 +6,52 @@
 
 @layer base {
   :root {
+    --background: 40 15% 96%;
+    --foreground: 30 15% 12%;
+
+    --card: 40 20% 99%;
+    --card-foreground: 30 15% 12%;
+
+    --popover: 40 20% 99%;
+    --popover-foreground: 30 15% 12%;
+
+    --primary: 40 55% 42%;
+    --primary-foreground: 40 20% 99%;
+
+    --secondary: 35 15% 92%;
+    --secondary-foreground: 30 15% 20%;
+
+    --muted: 35 12% 93%;
+    --muted-foreground: 30 10% 45%;
+
+    --accent: 40 30% 88%;
+    --accent-foreground: 40 40% 30%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 35 15% 88%;
+    --input: 35 15% 88%;
+    --ring: 40 55% 42%;
+
+    --radius: 0.5rem;
+
+    --hero-gradient: linear-gradient(135deg, hsl(35 12% 97%) 0%, hsl(40 20% 94%) 50%, hsl(35 15% 96%) 100%);
+    --card-shadow: 0 4px 30px -4px hsl(30 15% 12% / 0.06);
+    --card-shadow-hover: 0 8px 40px -4px hsl(30 15% 12% / 0.12);
+    --gold-glow: 0 0 60px hsl(40 55% 42% / 0.12);
+
+    --sidebar-background: 40 15% 96%;
+    --sidebar-foreground: 30 15% 12%;
+    --sidebar-primary: 40 55% 42%;
+    --sidebar-primary-foreground: 40 20% 99%;
+    --sidebar-accent: 35 15% 92%;
+    --sidebar-accent-foreground: 30 15% 20%;
+    --sidebar-border: 35 15% 88%;
+    --sidebar-ring: 40 55% 42%;
+  }
+
+  .dark {
     --background: 30 10% 5%;
     --foreground: 40 20% 92%;
 
@@ -33,8 +79,6 @@
     --border: 30 8% 16%;
     --input: 30 8% 16%;
     --ring: 40 60% 50%;
-
-    --radius: 0.5rem;
 
     --hero-gradient: linear-gradient(135deg, hsl(30 10% 6%) 0%, hsl(30 8% 3%) 50%, hsl(40 15% 8%) 100%);
     --card-shadow: 0 4px 30px -4px hsl(40 60% 50% / 0.06);
@@ -90,29 +134,27 @@
     background-clip: text;
   }
   .border-gold {
-    border-color: hsl(40 60% 50% / 0.2);
+    border-color: hsl(var(--ring) / 0.2);
   }
   .bg-gold-subtle {
-    background: hsl(40 60% 50% / 0.06);
+    background: hsl(var(--ring) / 0.08);
   }
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: hsl(30 10% 5%);
+  background: hsl(var(--background));
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(40 60% 50% / 0.3);
+  background: hsl(var(--ring) / 0.3);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(40 60% 50% / 0.5);
+  background: hsl(var(--ring) / 0.5);
 }

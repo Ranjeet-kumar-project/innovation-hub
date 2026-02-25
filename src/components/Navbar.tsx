@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX, FiSun, FiMoon } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
@@ -12,8 +12,14 @@ const navLinks = [
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains("dark"));
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+
+  const toggleTheme = () => {
+    document.documentElement.classList.toggle("dark");
+    setIsDark(!isDark);
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -71,16 +77,32 @@ const Navbar = () => {
                 )}
               </Link>
             ))}
+            <button
+              onClick={toggleTheme}
+              className="ml-2 rounded-sm p-2 text-muted-foreground transition-colors hover:text-primary"
+              aria-label="Toggle theme"
+            >
+              {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
+            </button>
           </div>
 
           {/* Mobile Controls */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="rounded-sm p-2 text-foreground transition-colors hover:text-primary md:hidden"
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <FiX size={22} /> : <FiMenu size={22} />}
-          </button>
+          <div className="flex items-center gap-2 md:hidden">
+            <button
+              onClick={toggleTheme}
+              className="rounded-sm p-2 text-foreground transition-colors hover:text-primary"
+              aria-label="Toggle theme"
+            >
+              {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
+            </button>
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="rounded-sm p-2 text-foreground transition-colors hover:text-primary"
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <FiX size={22} /> : <FiMenu size={22} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
