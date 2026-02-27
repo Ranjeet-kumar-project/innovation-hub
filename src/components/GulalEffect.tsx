@@ -1,32 +1,212 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 
 const GULAL_COLORS = [
-  "#FF1493", "#FF6B35", "#FFD700", "#00E676", "#2196F3",
-  "#E040FB", "#FF4081", "#76FF03", "#FFAB00", "#00BCD4",
-  "#FF5252", "#AA00FF", "#F50057", "#64DD17", "#FF9100",
+  ["#FF1493", "#FF69B4", "#FF85C8"],
+  ["#FF6B35", "#FF8C5A", "#FFAB82"],
+  ["#FFD700", "#FFE44D", "#FFF080"],
+  ["#00E676", "#4DFF9E", "#80FFB8"],
+  ["#2196F3", "#64B5F6", "#90CAF9"],
+  ["#E040FB", "#EA80FC", "#F0A0FD"],
+  ["#76FF03", "#A0FF44", "#C0FF80"],
+  ["#00BCD4", "#4DD0E1", "#80DEEA"],
 ];
 
-interface Splat {
-  x: number;
-  y: number;
-  radius: number;
+class PowderParticle {
+  x: number; y: number;
+  originX: number; originY: number;
+  vx: number; vy: number;
+  size: number;
+  baseSize: number;
   color: string;
-  alpha: number;
-  decay: number;
-  angle: number;
-  stretch: number;
+  life: number;
+  maxLife: number;
+  phase: "explode" | "settle" | "fade";
+  friction: number;
+  settled = false;
+
+  constructor(x: number, y: number, colors: string[]) {
+    this.originX = x;
+    this.originY = y;
+    this.x = x;
+    this.y = y;
+    const angle = Math.random() * Math.PI * 2;
+    const power = Math.pow(Math.random(), 0.5) * 12 + 2;
+    this.vx = Math.cos(angle) * power;
+    this.vy = Math.sin(angle) * power - Math.random() * 3;
+    this.baseSize = Math.random() * 6 + 2;
+    this.size = this.baseSize;
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+    this.maxLife = 80 + Math.random() * 60;
+    this.life = this.maxLife;
+    this.phase = "explode";
+    this.friction = 0.94 + Math.random() * 0.04;
+  }
+
+  update() {
+    this.life--;
+    const progress = 1 - this.life / this.maxLife;
+
+    if (progress < 0.15) {
+      this.phase = "explode";
+    } else if (progress < 0.5) {
+      this.phase = "settle";
+    } else {
+      this.phase = "fade";
+    }
+
+    switch (this.phase) {
+      case "explode":
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.15;
+        this.vx *= this.friction;
+        this.vy *= this.friction;
+        this.size = this.baseSize * (1 + (1 - progress / 0.15) * 2);
+        break;
+      case "settle":
+        this.x += this.vx * 0.3;
+        this.y += this.vy * 0.3;
+        this.vy += 0.08;
+        this.vx *= 0.96;
+        this.vy *= 0.96;
+        this.size = this.baseSize * 1.2;
+        break;
+      case "fade":
+        this.size = this.baseSize * (1 - (progress - 0.5) / 0.5) * 1.2;
+        break;
+    }
+
+    return this.life > 0 && this.size > 0.3;
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    const progress = 1 - this.life / this.maxLife;
+    let alpha: number;
+
+    if (progress < 0.1) {
+      alpha = progress / 0.1;
+    } else if (progress > 0.6) {
+      alpha = (1 - progress) / 0.4;
+    } else {
+      alpha = 1;
+    }
+
+    ctx.globalAlpha = Math.max(0, alpha * 0.85);
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, Math.max(0.5, this.size), 0, Math.PI * 2);
+    ctx.fill();
+  }
 }
 
-interface Speck {
-  x: number;
-  y: number;
-  size: number;
+class CloudPuff {
+  x: number; y: number;
+  radius: number;
+  maxRadius: number;
   color: string;
-  alpha: number;
-  decay: number;
+  life: number;
+  maxLife: number;
+  vx: number; vy: number;
+
+  constructor(x: number, y: number, colors: string[]) {
+    const angle = Math.random() * Math.PI * 2;
+    const dist = Math.random() * 30;
+    this.x = x + Math.cos(angle) * dist;
+    this.y = y + Math.sin(angle) * dist;
+    this.radius = 0;
+    this.maxRadius = 30 + Math.random() * 50;
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+    this.maxLife = 60 + Math.random() * 40;
+    this.life = this.maxLife;
+    const moveAngle = Math.random() * Math.PI * 2;
+    const speed = Math.random() * 2 + 0.5;
+    this.vx = Math.cos(moveAngle) * speed;
+    this.vy = Math.sin(moveAngle) * speed - 0.5;
+  }
+
+  update() {
+    this.life--;
+    const progress = 1 - this.life / this.maxLife;
+
+    // Expand quickly then slow
+    if (progress < 0.3) {
+      this.radius = this.maxRadius * (progress / 0.3) * 0.8;
+    } else {
+      this.radius = this.maxRadius * (0.8 + 0.2 * ((progress - 0.3) / 0.7));
+    }
+
+    this.x += this.vx;
+    this.y += this.vy;
+    this.vx *= 0.98;
+    this.vy *= 0.98;
+
+    return this.life > 0;
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    const progress = 1 - this.life / this.maxLife;
+    let alpha: number;
+
+    if (progress < 0.15) {
+      alpha = (progress / 0.15) * 0.35;
+    } else if (progress > 0.5) {
+      alpha = (1 - progress) / 0.5 * 0.35;
+    } else {
+      alpha = 0.35;
+    }
+
+    ctx.globalAlpha = Math.max(0, alpha);
+    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+    grad.addColorStop(0, this.color);
+    grad.addColorStop(0.4, this.color + "AA");
+    grad.addColorStop(1, this.color + "00");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
 }
 
 const GulalEffect = () => {
+  const particlesRef = useRef<PowderParticle[]>([]);
+  const cloudsRef = useRef<CloudPuff[]>([]);
+  const animRef = useRef<number>(0);
+  const runningRef = useRef(false);
+
+  const startLoop = useCallback((canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
+    if (runningRef.current) return;
+    runningRef.current = true;
+
+    const loop = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw clouds first (behind particles)
+      cloudsRef.current = cloudsRef.current.filter((c) => {
+        const alive = c.update();
+        if (alive) c.draw(ctx);
+        return alive;
+      });
+
+      // Draw particles
+      particlesRef.current = particlesRef.current.filter((p) => {
+        const alive = p.update();
+        if (alive) p.draw(ctx);
+        return alive;
+      });
+
+      ctx.globalAlpha = 1;
+
+      if (particlesRef.current.length > 0 || cloudsRef.current.length > 0) {
+        animRef.current = requestAnimationFrame(loop);
+      } else {
+        runningRef.current = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    };
+
+    loop();
+  }, []);
+
   const createBurst = useCallback((cx: number, cy: number) => {
     const canvas = document.getElementById("gulal-canvas") as HTMLCanvasElement;
     if (!canvas) return;
@@ -36,174 +216,21 @@ const GulalEffect = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const color1 = GULAL_COLORS[Math.floor(Math.random() * GULAL_COLORS.length)];
-    const color2 = GULAL_COLORS[Math.floor(Math.random() * GULAL_COLORS.length)];
-    const palette = [color1, color2];
+    // Pick a random color palette
+    const palette = GULAL_COLORS[Math.floor(Math.random() * GULAL_COLORS.length)];
 
-    const splats: Splat[] = [];
-    const specks: Speck[] = [];
-
-    // Main center splat – irregular blob
-    for (let i = 0; i < 5; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const dist = Math.random() * 15;
-      splats.push({
-        x: cx + Math.cos(angle) * dist,
-        y: cy + Math.sin(angle) * dist,
-        radius: Math.random() * 25 + 20,
-        color: color1,
-        alpha: 0.85,
-        decay: 0.003,
-        angle: Math.random() * Math.PI,
-        stretch: 0.6 + Math.random() * 0.8,
-      });
+    // Create powder particles
+    for (let i = 0; i < 90; i++) {
+      particlesRef.current.push(new PowderParticle(cx, cy, palette));
     }
 
-    // Scattered clumps – like thrown powder landing
-    for (let i = 0; i < 18; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const dist = 40 + Math.random() * 160;
-      const col = palette[Math.floor(Math.random() * palette.length)];
-      splats.push({
-        x: cx + Math.cos(angle) * dist + (Math.random() - 0.5) * 30,
-        y: cy + Math.sin(angle) * dist + (Math.random() - 0.5) * 30,
-        radius: Math.random() * 18 + 6,
-        color: col,
-        alpha: 0.7 + Math.random() * 0.2,
-        decay: 0.004 + Math.random() * 0.002,
-        angle: Math.random() * Math.PI,
-        stretch: 0.4 + Math.random() * 1.2,
-      });
+    // Create cloud puffs
+    for (let i = 0; i < 8; i++) {
+      cloudsRef.current.push(new CloudPuff(cx, cy, palette));
     }
 
-    // Tiny scattered specks – powder dust
-    for (let i = 0; i < 120; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const dist = 20 + Math.random() * 220;
-      const col = palette[Math.floor(Math.random() * palette.length)];
-      specks.push({
-        x: cx + Math.cos(angle) * dist + (Math.random() - 0.5) * 40,
-        y: cy + Math.sin(angle) * dist + (Math.random() - 0.5) * 40,
-        size: Math.random() * 4 + 1,
-        color: col,
-        alpha: 0.5 + Math.random() * 0.5,
-        decay: 0.005 + Math.random() * 0.004,
-      });
-    }
-
-    // Streak / spray lines
-    const drawStreak = (ctx: CanvasRenderingContext2D, sx: number, sy: number, angle: number, len: number, color: string, alpha: number) => {
-      ctx.save();
-      ctx.globalAlpha = alpha * 0.4;
-      ctx.translate(sx, sy);
-      ctx.rotate(angle);
-      for (let i = 0; i < len; i += 3) {
-        const w = Math.random() * 3 + 1;
-        ctx.fillStyle = color;
-        ctx.fillRect(i, (Math.random() - 0.5) * 6, w, w);
-      }
-      ctx.restore();
-    };
-
-    let animId: number;
-    let frame = 0;
-    const maxFrames = 180;
-
-    const animate = () => {
-      frame++;
-      // Don't clear – let splats stay and fade
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      let alive = false;
-
-      // Draw splats as irregular blobs
-      for (const s of splats) {
-        if (s.alpha <= 0) continue;
-        alive = true;
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, s.alpha);
-        ctx.translate(s.x, s.y);
-        ctx.rotate(s.angle);
-        ctx.scale(1, s.stretch);
-
-        // Irregular blob using multiple overlapping circles
-        ctx.fillStyle = s.color;
-        ctx.beginPath();
-        const pts = 8;
-        for (let i = 0; i <= pts; i++) {
-          const a = (i / pts) * Math.PI * 2;
-          const jitter = s.radius * (0.7 + Math.random() * 0.5);
-          const px = Math.cos(a) * jitter;
-          const py = Math.sin(a) * jitter;
-          if (i === 0) ctx.moveTo(px, py);
-          else ctx.quadraticCurveTo(
-            Math.cos(a - 0.3) * jitter * 1.1,
-            Math.sin(a - 0.3) * jitter * 1.1,
-            px, py
-          );
-        }
-        ctx.closePath();
-        ctx.fill();
-
-        // Soft glow
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, s.radius * 1.3);
-        grad.addColorStop(0, s.color + "66");
-        grad.addColorStop(1, s.color + "00");
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(0, 0, s.radius * 1.3, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.restore();
-        s.alpha -= s.decay;
-      }
-
-      // Draw specks
-      for (const sp of specks) {
-        if (sp.alpha <= 0) continue;
-        alive = true;
-        ctx.globalAlpha = Math.max(0, sp.alpha);
-        ctx.fillStyle = sp.color;
-
-        // Irregular speck shape
-        ctx.save();
-        ctx.translate(sp.x, sp.y);
-        ctx.rotate(Math.random() * Math.PI);
-        ctx.fillRect(-sp.size / 2, -sp.size / 2, sp.size, sp.size * (0.5 + Math.random()));
-        ctx.restore();
-
-        sp.alpha -= sp.decay;
-      }
-
-      // Draw streaks (only first few frames)
-      if (frame < 5) {
-        for (let i = 0; i < 8; i++) {
-          const angle = Math.random() * Math.PI * 2;
-          const dist = Math.random() * 40;
-          drawStreak(
-            ctx,
-            cx + Math.cos(angle) * dist,
-            cy + Math.sin(angle) * dist,
-            angle,
-            30 + Math.random() * 60,
-            palette[Math.floor(Math.random() * palette.length)],
-            0.6
-          );
-        }
-      }
-
-      ctx.globalAlpha = 1;
-
-      if (alive && frame < maxFrames) {
-        animId = requestAnimationFrame(animate);
-      } else {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-    };
-
-    animate();
-    return () => cancelAnimationFrame(animId);
-  }, []);
+    startLoop(canvas, ctx);
+  }, [startLoop]);
 
   useEffect(() => {
     const handler = (e: MouseEvent | TouchEvent) => {
@@ -223,6 +250,7 @@ const GulalEffect = () => {
     return () => {
       window.removeEventListener("click", handler);
       window.removeEventListener("touchstart", handler);
+      cancelAnimationFrame(animRef.current);
     };
   }, [createBurst]);
 
